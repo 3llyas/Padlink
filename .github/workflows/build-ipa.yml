@@ -1,0 +1,51 @@
+# Builds an unsigned PadLink.ipa on a GitHub-hosted Mac.
+# Sideloadly / AltStore re-sign it with your Apple ID when you install it.
+name: Build IPA
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: ios
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project PadLink.xcodeproj \
+            -scheme PadLink \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package IPA
+        run: |
+          rm -rf Payload PadLink.ipa
+          mkdir Payload
+          cp -R build/Build/Products/Release-iphoneos/PadLink.app Payload/
+          zip -qry PadLink.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PadLink-ipa
+          path: ios/PadLink.ipa
+          if-no-files-found: error

@@ -1,0 +1,40 @@
+# XcodeGen spec — the .xcodeproj is generated from this (locally on a Mac, or by
+# the GitHub Actions workflow). Run `xcodegen generate` inside the ios/ folder.
+name: PadLink
+options:
+  bundleIdPrefix: com.padlink
+  deploymentTarget:
+    iOS: "15.0"
+targets:
+  PadLink:
+    type: application
+    platform: iOS
+    sources:
+      - PadLink
+    scheme: {}
+    info:
+      path: PadLink/Info.plist
+      properties:
+        CFBundleDisplayName: PadLink
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        UILaunchScreen: {}
+        UIRequiresFullScreen: true
+        UIStatusBarHidden: true
+        UIViewControllerBasedStatusBarAppearance: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        NSLocalNetworkUsageDescription: PadLink sends your controller input to your PC over the local network.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.padlink.app
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SWIFT_VERSION: "5.0"
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Automatic
